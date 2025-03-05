@@ -7,7 +7,7 @@ router.post(
   uploadMultiple,
   async (req: Request, res: Response) => {
     try {
-      const { name, description, price } = req.body;
+      const { name, description, price, stock } = req.body;
       const images = (req.files as Express.Multer.File[]).map(
         (file) => file.path
       );
@@ -15,6 +15,7 @@ router.post(
         name,
         description,
         price,
+        stock,
         images,
       });
       await product.save();

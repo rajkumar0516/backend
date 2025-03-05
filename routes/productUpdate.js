@@ -15,8 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const product_1 = require("../models/product");
 const upload_1 = require("../middlewares/upload");
+const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const router = express_1.default.Router();
-router.put('/update/:id', upload_1.uploadMultiple, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/update/:id', authMiddleware_1.default, upload_1.uploadMultiple, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
         const { name, description, price } = req.body;

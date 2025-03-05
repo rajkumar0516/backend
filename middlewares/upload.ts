@@ -15,6 +15,7 @@ const fileFilter = (
     ? cb(null, true)
     : cb(new Error('Only images allowed!'));
 };
+export const uploadNone = multer({ storage: storage });
 export const uploadSingle = multer({ storage, fileFilter }).single('image');
 export const uploadMultiple = multer({ storage, fileFilter }).array(
   'images',

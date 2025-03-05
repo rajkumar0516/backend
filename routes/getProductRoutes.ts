@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 import { Product } from '../models/product';
-
+import authMiddleware from '../middlewares/authMiddleware';
 const router = express.Router();
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);

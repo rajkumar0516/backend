@@ -18,12 +18,13 @@ const upload_1 = require("../middlewares/upload");
 const router = express_1.default.Router();
 router.post('/add-multiple', upload_1.uploadMultiple, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, description, price } = req.body;
+        const { name, description, price, stock } = req.body;
         const images = req.files.map((file) => file.path);
         const product = new product_1.Product({
             name,
             description,
             price,
+            stock,
             images,
         });
         yield product.save();

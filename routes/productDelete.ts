@@ -1,8 +1,9 @@
 import express from 'express';
 import { Product } from '../models/product';
+import authMiddleware from '../middlewares/authMiddleware';
 const router = express.Router();
 
-router.delete('/delete/:id', async (req: any, res: any) => {
+router.delete('/delete/:id', authMiddleware, async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const deletedProduct = await Product.findByIdAndDelete(id);

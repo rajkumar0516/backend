@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import { sendingEmail } from './cron/cron';
 dotenv.config();
 import express, { Application } from 'express';
 import cors from 'cors';
@@ -10,6 +11,8 @@ import deleteRouter from './routes/productDelete';
 import connectDB from './database';
 import authRoutes from './routes/authRoutes';
 import updateRouter from './routes/productUpdate';
+import filterRouter from './routes/filteredProduct';
+import sendMailRouter from './routes/sendMailRouter';
 const app: Application = express();
 const port: string | number = process.env.PORT ?? 5000;
 
@@ -29,6 +32,8 @@ app.use('/api/products', productRouter);
 app.use('/api/products', getProductRouter);
 app.use('/api/products/', deleteRouter);
 app.use('/api/products/', updateRouter);
+app.use('/api/products', filterRouter);
+app.use('/api/mail', sendMailRouter);
 app.use(
   '/uploads',
   express.static(path.join(__dirname, 'middlewares/uploads'))
@@ -36,9 +41,9 @@ app.use(
 async function main(): Promise<void> {
   try {
     await connectDB();
+    await sendingEmail();
     console.log('Connected to MongoDB');
 
-    // Start the server only after a successful DB connection
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
