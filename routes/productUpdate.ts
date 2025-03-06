@@ -3,12 +3,8 @@ import { Product } from '../models/product';
 import { uploadMultiple } from '../middlewares/upload';
 import authMiddleware from '../middlewares/authMiddleware';
 const router = express.Router();
-
-router.put(
-  '/update/:id',
-  authMiddleware,
-  uploadMultiple,
-  async (req: any, res: any) => {
+class ProductController {
+  async updateProduct(req: any, res: any): Promise<void> {
     try {
       const id = req.params.id;
       const { name, description, price } = req.body;
@@ -34,6 +30,13 @@ router.put(
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+}
+const updateSingleProduct = new ProductController();
+router.put(
+  '/update/:id',
+  authMiddleware,
+  uploadMultiple,
+  updateSingleProduct.updateProduct.bind(ProductController)
 );
 
 export default router;

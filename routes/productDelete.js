@@ -16,17 +16,23 @@ const express_1 = __importDefault(require("express"));
 const product_1 = require("../models/product");
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const router = express_1.default.Router();
-router.delete('/delete/:id', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const deletedProduct = yield product_1.Product.findByIdAndDelete(id);
-        if (!deletedProduct) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-        res.json({ message: 'Product deleted successfully' });
+class ProductController {
+    deleteProduct(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const deletedProduct = yield product_1.Product.findByIdAndDelete(id);
+                if (!deletedProduct) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+                res.json({ message: 'Product deleted successfully' });
+            }
+            catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
     }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}));
+}
+const productDelete = new ProductController();
+router.delete('/delete/:id', authMiddleware_1.default, productDelete.deleteProduct.bind(ProductController));
 exports.default = router;

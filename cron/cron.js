@@ -24,7 +24,7 @@ const sendingEmail = () => __awaiter(void 0, void 0, void 0, function* () {
             yield (0, emailService_1.sendMail)({
                 to: user.email,
                 subject: 'Scheduled Email',
-                template: 'schedule',
+                template: 'welcome',
             });
         }
         console.log('Emails sent successfully!');
@@ -34,6 +34,6 @@ const sendingEmail = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.sendingEmail = sendingEmail;
-node_cron_1.default.schedule('* * * * *', () => {
+node_cron_1.default.schedule('0 22 * * *', () => {
     (0, exports.sendingEmail)();
 });

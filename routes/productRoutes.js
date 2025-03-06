@@ -16,22 +16,28 @@ const express_1 = __importDefault(require("express"));
 const product_1 = require("../models/product");
 const upload_1 = require("../middlewares/upload");
 const router = express_1.default.Router();
-router.post('/add-multiple', upload_1.uploadMultiple, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { name, description, price, stock } = req.body;
-        const images = req.files.map((file) => file.path);
-        const product = new product_1.Product({
-            name,
-            description,
-            price,
-            stock,
-            images,
+class ProductController {
+    addProduct(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, description, price, stock } = req.body;
+                const images = req.files.map((file) => file.path);
+                const product = new product_1.Product({
+                    name,
+                    description,
+                    price,
+                    stock,
+                    images,
+                });
+                yield product.save();
+                res.status(201).json(product);
+            }
+            catch (error) {
+                res.status(500).json({ error: error.message });
+            }
         });
-        yield product.save();
-        res.status(201).json(product);
     }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}));
+}
+const addProducts = new ProductController();
+router.post('/add-multiple', upload_1.uploadMultiple, addProducts.addProduct.bind(ProductController));
 exports.default = router;

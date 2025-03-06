@@ -1,7 +1,6 @@
 import cron from 'node-cron';
 import { User } from '../models/user.model';
 import { sendMail } from '../mailer/emailService';
-
 export const sendingEmail = async () => {
   try {
     const users = await User.find({}).select('email');
@@ -11,7 +10,7 @@ export const sendingEmail = async () => {
       await sendMail({
         to: user.email,
         subject: 'Scheduled Email',
-        template: 'schedule',
+        template: 'welcome',
       });
     }
     console.log('Emails sent successfully!');
@@ -19,6 +18,6 @@ export const sendingEmail = async () => {
     console.log('Error sending emails:', error);
   }
 };
-cron.schedule('* * * * *', () => {
+cron.schedule('0 22 * * *', () => {
   sendingEmail();
 });

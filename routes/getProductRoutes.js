@@ -16,13 +16,19 @@ const express_1 = __importDefault(require("express"));
 const product_1 = require("../models/product");
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const router = express_1.default.Router();
-router.get('/', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const products = yield product_1.Product.find();
-        res.status(200).json(products);
+class ProductController {
+    getProduct(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const products = yield product_1.Product.find();
+                res.status(200).json(products);
+            }
+            catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
     }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}));
+}
+const getProducts = new ProductController();
+router.get('/', authMiddleware_1.default, getProducts.getProduct.bind(ProductController));
 exports.default = router;

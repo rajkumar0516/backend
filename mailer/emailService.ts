@@ -20,6 +20,7 @@ export const sendMail = async ({
       path.join(__dirname, '../templates', `${template}.html`),
       'utf-8'
     );
+    console.log(to, subject, template, 'received');
     const mailOptions = {
       from: process.env.FROM_EMAIL,
       to,

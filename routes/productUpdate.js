@@ -17,26 +17,32 @@ const product_1 = require("../models/product");
 const upload_1 = require("../middlewares/upload");
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const router = express_1.default.Router();
-router.put('/update/:id', authMiddleware_1.default, upload_1.uploadMultiple, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const id = req.params.id;
-        const { name, description, price } = req.body;
-        const existingProduct = yield product_1.Product.findById(id);
-        if (!existingProduct) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-        const newImages = req.files
-            ? req.files.map((file) => file.path)
-            : existingProduct.images;
-        const updatedProduct = yield product_1.Product.findByIdAndUpdate(id, { name, description, price, images: newImages }, { new: true, runValidators: true });
-        return res.status(200).json({
-            message: 'Product updated successfully',
-            product: updatedProduct,
+class ProductController {
+    updateProduct(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = req.params.id;
+                const { name, description, price } = req.body;
+                const existingProduct = yield product_1.Product.findById(id);
+                if (!existingProduct) {
+                    return res.status(404).json({ error: 'Product not found' });
+                }
+                const newImages = req.files
+                    ? req.files.map((file) => file.path)
+                    : existingProduct.images;
+                const updatedProduct = yield product_1.Product.findByIdAndUpdate(id, { name, description, price, images: newImages }, { new: true, runValidators: true });
+                return res.status(200).json({
+                    message: 'Product updated successfully',
+                    product: updatedProduct,
+                });
+            }
+            catch (error) {
+                console.error('Error updating product:', error);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
         });
     }
-    catch (error) {
-        console.error('Error updating product:', error);
-        return res.status(500).json({ error: 'Internal server error' });
-    }
-}));
+}
+const updateSingleProduct = new ProductController();
+router.put('/update/:id', authMiddleware_1.default, upload_1.uploadMultiple, updateSingleProduct.updateProduct.bind(ProductController));
 exports.default = router;

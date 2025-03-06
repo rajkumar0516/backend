@@ -15,31 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const product_1 = require("../models/product");
 const router = express_1.default.Router();
-router.get('/filter', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { name, startDate, endDate, stock } = req.query;
-        const filter = {};
-        if (name) {
-            filter.name = { $regex: new RegExp(name, 'i') };
-        }
-        if (startDate && endDate) {
-            filter.createdAt = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate),
-            };
-        }
-        if (stock !== undefined) {
-            filter.stock = stock == 'true' ? { $gt: 0 } : { $eq: 0 };
-        }
-        const filteredProduct = yield product_1.Product.find(filter);
-        if (filteredProduct.length === 0) {
-            return res.status(404).json({ message: 'No product found' });
-        }
-        res.status(200).json(filteredProduct);
+class ProductController {
+    filterProduct(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, startDate, endDate, stock } = req.query;
+                const filter = {};
+                if (name) {
+                    filter.name = { $regex: new RegExp(name, 'i') };
+                }
+                if (startDate && endDate) {
+                    filter.createdAt = {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate),
+                    };
+                }
+                if (stock !== undefined) {
+                    filter.stock = stock == 'true' ? { $gt: 0 } : { $eq: 0 };
+                }
+                const filteredProduct = yield product_1.Product.find(filter);
+                if (filteredProduct.length === 0) {
+                    return res.status(404).json({ message: 'No product found' });
+                }
+                res.status(200).json(filteredProduct);
+            }
+            catch (error) {
+                console.log('error', error.message);
+                res.status(500).json({ error: error.message });
+            }
+        });
     }
-    catch (error) {
-        console.log('error', error.message);
-        res.status(500).json({ error: error.message });
-    }
-}));
+}
+const filteredProduct = new ProductController();
+router.get('/filter', filteredProduct.filterProduct.bind(ProductController));
 exports.default = router;

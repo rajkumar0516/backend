@@ -19,6 +19,7 @@ const path_1 = __importDefault(require("path"));
 const sendMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, subject, template, attachmentPath, }) {
     try {
         const emailTemplate = fs_1.default.readFileSync(path_1.default.join(__dirname, '../templates', `${template}.html`), 'utf-8');
+        console.log(to, subject, template, 'received');
         const mailOptions = {
             from: process.env.FROM_EMAIL,
             to,

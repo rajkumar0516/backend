@@ -16,16 +16,22 @@ const express_1 = __importDefault(require("express"));
 const emailService_1 = require("../mailer/emailService");
 const upload_1 = require("../middlewares/upload");
 const router = express_1.default.Router();
-router.post('/send', upload_1.uploadSingle, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { to, subject, template } = req.body;
-        const attachmentPath = req.file;
-        console.log(to, subject, template, attachmentPath);
-        yield (0, emailService_1.sendMail)({ to, subject, template, attachmentPath });
-        res.status(200).json({ message: 'Email sent successfully' });
+class MailController {
+    sendMail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { to, subject, template } = req.body;
+                const attachmentPath = req.file;
+                console.log(to, subject, template, attachmentPath);
+                yield (0, emailService_1.sendMail)({ to, subject, template, attachmentPath });
+                res.status(200).json({ message: 'Email sent successfully' });
+            }
+            catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        });
     }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}));
+}
+const sendMailObj = new MailController();
+router.post('/send', upload_1.uploadSingle, sendMailObj.sendMail.bind(MailController));
 exports.default = router;
